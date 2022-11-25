@@ -7,6 +7,8 @@ import { Component, Input } from '@angular/core';
 })
 export class VjInputComponent {
   @Input() label?: string;
+  @Input() hint?: string;
+  @Input() invalid?: boolean;
 
   onLabel(): void {
     console.log('fô');

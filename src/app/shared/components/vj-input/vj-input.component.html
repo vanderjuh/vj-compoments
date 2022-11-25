@@ -1,9 +1,13 @@
-<div class="vj-input-component">
-  <div *ngIf="label?.length" class="vj-input-label" (click)="onLabel()">
-    <label [for]="label">
-      <span>{{label}}</span>
-    </label>
-    <div class="invisible-border-top"></div>
+<div class="vj-input-component {{invalid ? 'invalid-state' : ''}}">
+  <div class="input-container">
+    <div *ngIf="label?.length" class="vj-input-label" (click)="onLabel()">
+      <label [for]="label">
+        <span>{{label}}</span>
+      </label>
+      <div class="invisible-border-top"></div>
+    </div>
+    <ng-content #content></ng-content>
   </div>
-  <ng-content #content></ng-content>
+  <div class="input-hint"><span>{{hint}}</span></div>
+  <div *ngIf="invalid" class="input-error"><span>Campo inválido</span></div>
 </div>
