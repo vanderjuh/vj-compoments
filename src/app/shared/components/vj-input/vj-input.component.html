@@ -1,0 +1,9 @@
+<div class="vj-input-component">
+  <div *ngIf="label?.length" class="vj-input-label" (click)="onLabel()">
+    <label [for]="label">
+      <span>{{label}}</span>
+    </label>
+    <div class="invisible-border-top"></div>
+  </div>
+  <ng-content #content></ng-content>
+</div>

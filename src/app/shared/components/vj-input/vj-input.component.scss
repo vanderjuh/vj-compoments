@@ -1,0 +1,68 @@
+@import "../../theme/vj-theme.scss";
+
+$input-height: 2rem;
+$input-background-color: white;
+
+$font-color: rgba(0, 0, 0, 0.7);
+$input-border-size: 1px;
+$input-border-color: rgba(0, 0, 0, 0.2);
+$input-border-focused-color: rgba(0, 0, 0, 0.5);
+
+$label-size: 90%;
+$label-height: 1rem;
+
+.vj-input-component {
+  padding: $padding;
+  border: $input-border-size solid $input-border-color;
+  border-radius: $border-radius;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  box-sizing: border-box;
+  background-color: $input-background-color;
+  transition: all ease-in-out 0.3s;
+  .vj-input-label {
+    width: 100%;
+    position: absolute;
+    top: (0 - calc($label-height * 0.7));
+    label {
+      width: $label-size;
+      height: $label-height;
+      position: absolute;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      padding: unset;
+      margin: unset;
+      color: $font-color;
+    }
+    .invisible-border-top {
+      width: $label-size;
+      background-color: $input-background-color;
+      margin-top: calc($label-height * 0.65);
+      height: $input-border-size;
+    }
+  }
+  ::ng-deep {
+    input,
+    select {
+      min-width: 100px;
+      height: $input-height;
+      padding: unset;
+      border: unset;
+      color: $font-color;
+    }
+    input:focus,
+    select:focus {
+      border: unset;
+      outline: unset;
+      &::placeholder {
+        color: $input-background-color;
+      }
+    }
+  }
+  &:focus-within {
+    transition: all ease-in-out 0.1s;
+    border: $input-border-size solid $input-border-focused-color;
+  }
+}
