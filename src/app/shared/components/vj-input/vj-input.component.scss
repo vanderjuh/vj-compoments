@@ -7,11 +7,15 @@ $font-color: rgba(0, 0, 0, 0.5);
 $input-border-size: 1px;
 $input-border-color: rgba(0, 0, 0, 0.5);
 $input-border-focused-color: rgba(0, 0, 0, 1);
+$input-hint-error-heigth: 1rem;
 
 $label-size: 90%;
 $label-height: 1.1rem;
 
+$input-autocomplete-height: 2rem;
+
 .vj-input-component {
+  position: relative;
   .input-container {
     padding: $padding;
     border: $input-border-size solid $input-border-color;
@@ -70,11 +74,35 @@ $label-height: 1.1rem;
   }
   .input-hint {
     width: 100%;
-    min-height: 1rem;
+    min-height: $input-hint-error-heigth;
     font-size: small;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+  }
+  .input-autocomplete {
+    width: 100%;
+    min-height: $input-autocomplete-height;
+    background-color: white;
+    position: absolute;
+    left: 0;
+    top: calc($input-height + ($padding * 2) + $input-hint-error-heigth);
+    border-radius: $border-radius;
+    border: $input-border-size solid $input-border-color;
+    padding: $padding;
+    box-sizing: border-box;
+    .arrow {
+      width: 1rem;
+      height: 1rem;
+      background-color: white;
+      border: $input-border-size solid $input-border-color;
+      border-bottom: unset;
+      border-right: unset;
+      position: absolute;
+      top: -0.57rem;
+      margin-left: calc(50% - 1rem);
+      transform: rotate(45deg);
+    }
   }
 }
 .invalid-state {
@@ -100,7 +128,7 @@ $label-height: 1.1rem;
   }
   .input-error {
     width: 100%;
-    min-height: 1rem;
+    min-height: $input-hint-error-heigth;
     font-size: small;
     overflow: hidden;
     white-space: nowrap;

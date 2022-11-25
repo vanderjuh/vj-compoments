@@ -8,6 +8,10 @@
     </div>
     <ng-content #content></ng-content>
   </div>
+  <div class="input-autocomplete">
+    <div class="arrow"></div>
+    <div>Loading...</div>
+  </div>
   <div class="input-hint"><span>{{hint}}</span></div>
   <div *ngIf="invalid" class="input-error"><span>Campo inválido</span></div>
 </div>
