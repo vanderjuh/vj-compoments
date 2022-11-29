@@ -1,21 +1,23 @@
-<div class="vj-input-component {{invalid ? 'invalid-state' : ''}}">
+<div class="vj-input-component {{(invalid || noResultsFound) ? 'invalid-state' : ''}}">
   <div class="input-container">
-    <div *ngIf="label?.length" class="vj-input-label" (click)="onLabel()">
+    <div *ngIf="label?.length" class="vj-input-label">
       <label [for]="label">
         <span>{{label}}</span>
       </label>
       <div class="invisible-border-top"></div>
     </div>
-    <ng-content #content></ng-content>
+    <ng-content></ng-content>
   </div>
-  <div class="input-autocomplete">
+  <div *ngIf="isFocused" class="input-autocomplete">
     <div class="arrow"></div>
-    <div *ngIf="isLoading">Loading...</div>
+    <div class="input-autocomplete-loading" *ngIf="isLoading">Loading...</div>
     <div *ngIf="!isLoading" class="input-autocomplete-list">
-      <div class="input-autocomplete-item" *ngFor="let item of list"
-        [ngClass]="{'input-autocomplete-item-disabled': item.disabled}" (click)="onClickAutocompleteItem(item)">{{item.label}}</div>
+      <div class="input-autocomplete-item" *ngFor="let item of filteredList"
+        [ngClass]="{'input-autocomplete-item-disabled': item.disabled}" (mousedown)="onClickAutocompleteItem(item)">
+        {{item.label}}</div>
     </div>
   </div>
-  <div class="input-hint"><span>{{hint}}</span></div>
-  <div *ngIf="invalid" class="input-error"><span>Campo inválido</span></div>
+  <div *ngIf="!noResultsFound" class="input-hint"><span>{{hint}}</span></div>
+  <div *ngIf="invalid" class="input-error"><span>Invalid field.</span></div>
+  <div *ngIf="noResultsFound" class="input-error"><span>No results found.</span></div>
 </div>

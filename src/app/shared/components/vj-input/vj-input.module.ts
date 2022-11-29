@@ -1,17 +1,20 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
 
+import { VjInputDirective } from './directives/vj-input.directive';
 import { VjInputComponent } from './vj-input.component';
 
 @NgModule({
   declarations: [
-    VjInputComponent
+    VjInputComponent,
+    VjInputDirective
   ],
   imports: [
     CommonModule
   ],
   exports: [
-    VjInputComponent
+    VjInputComponent,
+    VjInputDirective
   ]
 })
 export class VjInputModule { }

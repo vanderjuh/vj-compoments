@@ -103,6 +103,13 @@ $input-autocomplete-height: 2rem;
       margin-left: calc(50% - 1rem);
       transform: rotate(45deg);
     }
+    .input-autocomplete-loading {
+      height: 50px;
+      padding: $padding;
+      display: flex;
+      justify-content: start;
+      align-items: center;
+    }
     .input-autocomplete-list {
       width: 100%;
       display: flex;
