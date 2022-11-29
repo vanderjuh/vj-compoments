@@ -14,6 +14,9 @@ $label-height: 1.1rem;
 
 $input-autocomplete-height: 2rem;
 
+* {
+  box-sizing: border-box;
+}
 .vj-input-component {
   position: relative;
   .input-container {
@@ -23,7 +26,6 @@ $input-autocomplete-height: 2rem;
     display: flex;
     flex-direction: column;
     position: relative;
-    box-sizing: border-box;
     background-color: $input-background-color;
     transition: all ease-in-out 0.3s;
     .vj-input-label {
@@ -89,8 +91,6 @@ $input-autocomplete-height: 2rem;
     top: calc($input-height + ($padding * 2) + $input-hint-error-heigth);
     border-radius: $border-radius;
     border: $input-border-size solid $input-border-color;
-    padding: $padding;
-    box-sizing: border-box;
     .arrow {
       width: 1rem;
       height: 1rem;
@@ -102,6 +102,30 @@ $input-autocomplete-height: 2rem;
       top: -0.57rem;
       margin-left: calc(50% - 1rem);
       transform: rotate(45deg);
+    }
+    .input-autocomplete-list {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      .input-autocomplete-item {
+        width: 100%;
+        height: 50px;
+        display: flex;
+        justify-content: start;
+        align-items: center;
+        padding: $padding;
+        &:hover {
+          background-color: rgba(0, 0, 0, 0.1);
+        }
+        z-index: 1;
+        cursor: pointer;
+      }
+      .input-autocomplete-item-disabled {
+        background-color: rgba(0, 0, 0, 0.08);
+        color: gray;
+        pointer-events: none;
+        cursor: default;
+      }
     }
   }
 }

@@ -10,7 +10,11 @@
   </div>
   <div class="input-autocomplete">
     <div class="arrow"></div>
-    <div>Loading...</div>
+    <div *ngIf="isLoading">Loading...</div>
+    <div *ngIf="!isLoading" class="input-autocomplete-list">
+      <div class="input-autocomplete-item" *ngFor="let item of list"
+        [ngClass]="{'input-autocomplete-item-disabled': item.disabled}" (click)="onClickAutocompleteItem(item)">{{item.label}}</div>
+    </div>
   </div>
   <div class="input-hint"><span>{{hint}}</span></div>
   <div *ngIf="invalid" class="input-error"><span>Campo inválido</span></div>
