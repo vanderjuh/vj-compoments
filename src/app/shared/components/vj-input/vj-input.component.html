@@ -1,11 +1,10 @@
 <div class="vj-input-component {{(invalid || noResultsFound) ? 'invalid-state' : ''}}">
+  <div *ngIf="label?.length" class="vj-input-label">
+    <label [for]="label">
+      <span>{{label}}</span>
+    </label>
+  </div>
   <div class="input-container">
-    <div *ngIf="label?.length" class="vj-input-label">
-      <label [for]="label">
-        <span>{{label}}</span>
-      </label>
-      <div class="invisible-border-top"></div>
-    </div>
     <ng-content></ng-content>
   </div>
   <div *ngIf="isFocused" class="input-autocomplete">

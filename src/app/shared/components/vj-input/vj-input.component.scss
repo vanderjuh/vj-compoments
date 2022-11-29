@@ -10,7 +10,7 @@ $input-border-focused-color: rgba(0, 0, 0, 1);
 $input-hint-error-heigth: 1rem;
 
 $label-size: 90%;
-$label-height: 1.1rem;
+$label-height: 0rem;
 
 $input-autocomplete-height: 2rem;
 
@@ -19,6 +19,20 @@ $input-autocomplete-height: 2rem;
 }
 .vj-input-component {
   position: relative;
+  .vj-input-label {
+    width: 100%;
+    label {
+      width: $label-size;
+      height: $label-height;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      padding: unset;
+      margin: unset;
+      color: $font-color;
+      font-size: small;
+    }
+  }
   .input-container {
     padding: $padding;
     border: $input-border-size solid $input-border-color;
@@ -28,29 +42,6 @@ $input-autocomplete-height: 2rem;
     position: relative;
     background-color: $input-background-color;
     transition: all ease-in-out 0.3s;
-    .vj-input-label {
-      width: 100%;
-      position: absolute;
-      top: (0 - calc($label-height * 0.55));
-      label {
-        width: $label-size;
-        height: $label-height;
-        position: absolute;
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        padding: unset;
-        margin: unset;
-        color: $font-color;
-        font-size: small;
-      }
-      .invisible-border-top {
-        width: $label-size;
-        background-color: $input-background-color;
-        margin-top: calc($label-height * 0.5);
-        height: $input-border-size;
-      }
-    }
     ::ng-deep {
       input,
       select {
@@ -81,6 +72,7 @@ $input-autocomplete-height: 2rem;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+    animation: bottom-to-top ease-in-out 0.2s;
   }
   .input-autocomplete {
     width: 100%;
@@ -88,7 +80,7 @@ $input-autocomplete-height: 2rem;
     background-color: white;
     position: absolute;
     left: 0;
-    top: calc($input-height + ($padding * 2) + $input-hint-error-heigth);
+    top: calc($input-height + ($padding * 2) + ($input-hint-error-heigth * 2.5));
     border-radius: $border-radius;
     border: $input-border-size solid $input-border-color;
     .arrow {
@@ -137,13 +129,13 @@ $input-autocomplete-height: 2rem;
   }
 }
 .invalid-state {
+  .vj-input-label {
+    label {
+      color: red;
+    }
+  }
   .input-container {
     border: $input-border-size solid red;
-    .vj-input-label {
-      label {
-        color: red;
-      }
-    }
     ::ng-deep {
       input,
       select {
@@ -165,5 +157,16 @@ $input-autocomplete-height: 2rem;
     white-space: nowrap;
     text-overflow: ellipsis;
     color: red;
+    animation: bottom-to-top ease-in-out 0.2s;
+  }
+}
+@keyframes bottom-to-top {
+  0% {
+    opacity: 0;
+    transform: translateY(25%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
