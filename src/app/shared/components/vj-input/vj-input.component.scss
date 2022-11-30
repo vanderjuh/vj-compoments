@@ -107,6 +107,7 @@ $input-autocomplete-height: 2rem;
     top: calc($input-height + ($padding * 2) + ($input-hint-error-heigth * 3));
     border-radius: $border-radius;
     border: $input-border-size solid $input-border-color;
+    animation: bottom-to-top ease-in-out 0.2s;
     .arrow {
       width: 1rem;
       height: 1rem;

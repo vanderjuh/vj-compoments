@@ -92,6 +92,7 @@ export class VjInputComponent implements AfterContentInit, OnInit, OnDestroy {
   reset(): void {
     if (this.input) {
       this.input.element.nativeElement.value = '';
+      this.noResultsFound = false;
     }
   }
 }
