@@ -23,6 +23,10 @@ export class VjMaskDirective implements AfterContentInit {
     return this.fieldValue.slice(-1);
   }
 
+  get isAllValueSelected(): boolean {
+    return (this.element.nativeElement.selectionStart === 0) && (this.element.nativeElement.selectionEnd === (this.fieldValue.length));
+  }
+
   constructor(
     public element: ElementRef<HTMLInputElement>
   ) {
@@ -47,7 +51,7 @@ export class VjMaskDirective implements AfterContentInit {
       const isNextNumber = (nextNumberIndex === index);
 
       // Backspace
-      if (keyValue === this.backspaceKey) {
+      if (keyValue === this.backspaceKey && !this.isAllValueSelected) {
         const missingFlags = this.mask.substring((this.fieldValue.length - 1), this.mask.length);
         this.value = this.fieldValue.substring(0, (this.fieldValue.length - 1));
         this.value = this.value.concat(missingFlags);
@@ -55,6 +59,13 @@ export class VjMaskDirective implements AfterContentInit {
         if (this.lastChar === '-') {
           this.element.nativeElement.value = this.fieldValue.substring(0, this.fieldValue.length - 1);
         }
+        this.resetValue();
+        return;
+      }
+
+      // Backspace: all value selected
+      if (keyValue === this.backspaceKey && this.isAllValueSelected) {
+        this.element.nativeElement.value = '';
         this.resetValue();
         return;
       }
