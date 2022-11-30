@@ -34,6 +34,10 @@ export class VjInputComponent implements AfterContentInit, OnInit, OnDestroy {
     return (el?.id === this.input?.element?.nativeElement?.id);
   }
 
+  get value(): string {
+    return (this.input?.element.nativeElement.value ?? '');
+  }
+
   private searchingEvent = new EventEmitter<string>();
   private searchingSub!: Subscription;
 
@@ -62,12 +66,11 @@ export class VjInputComponent implements AfterContentInit, OnInit, OnDestroy {
       this.input.element.nativeElement.addEventListener('keyup', () => {
         this.isLoading = true;
         this.noResultsFound = false;
-        this.searchingEvent.emit(this.input?.element?.nativeElement?.value)
+        this.searchingEvent.emit(this.value)
       })
       this.input.element.nativeElement.addEventListener('focus', () => {
         this.isFocused;
-        const value = (this.input?.element.nativeElement.value ?? '');
-        const selectedValue = this.list.find(x => value.length && x.label.toLowerCase().trim().includes(value.toLowerCase().trim()));
+        const selectedValue = this.list.find(x => this.value.length && x.label.toLowerCase().trim().includes(this.value.toLowerCase().trim()));
         if (selectedValue) {
           this.filteredList = [selectedValue];
         }
@@ -83,6 +86,12 @@ export class VjInputComponent implements AfterContentInit, OnInit, OnDestroy {
     if (this.input) {
       this.input.element.nativeElement.value = (this.input && !event.disabled) ? event.label : '';
       this.noResultsFound = false;
+    }
+  }
+
+  reset(): void {
+    if (this.input) {
+      this.input.element.nativeElement.value = '';
     }
   }
 }

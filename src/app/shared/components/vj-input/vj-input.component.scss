@@ -1,3 +1,4 @@
+@import "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0";
 @import "../../theme/vj-theme.scss";
 
 $input-height: 2rem;
@@ -38,14 +39,16 @@ $input-autocomplete-height: 2rem;
     border: $input-border-size solid $input-border-color;
     border-radius: $border-radius;
     display: flex;
-    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
     position: relative;
     background-color: $input-background-color;
     transition: all ease-in-out 0.3s;
     ::ng-deep {
       input,
       select {
-        min-width: 100px;
+        width: 100%;
         height: $input-height;
         padding: unset;
         border: unset;
@@ -64,6 +67,27 @@ $input-autocomplete-height: 2rem;
       transition: all ease-in-out 0.1s;
       border: $input-border-size solid $input-border-focused-color;
     }
+    .close-autocomplete {
+      width: 30px;
+      height: 30px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      border-radius: 50%;
+      background-color: transparent;
+      transition: all ease-in-out 0.2s;
+      .material-symbols-outlined {
+        font-size: smaller !important;
+      }
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+        transition: all ease-in-out 0.2s;
+      }
+      &:active {
+        background-color: rgba(0, 0, 0, 0.1);
+      }
+    }
   }
   .input-hint {
     width: 100%;
@@ -80,7 +104,7 @@ $input-autocomplete-height: 2rem;
     background-color: white;
     position: absolute;
     left: 0;
-    top: calc($input-height + ($padding * 2) + ($input-hint-error-heigth * 2.5));
+    top: calc($input-height + ($padding * 2) + ($input-hint-error-heigth * 3));
     border-radius: $border-radius;
     border: $input-border-size solid $input-border-color;
     .arrow {

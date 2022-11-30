@@ -5,7 +5,12 @@
     </label>
   </div>
   <div class="input-container">
-    <ng-content></ng-content>
+    <div style="width: 100%;">
+      <ng-content></ng-content>
+    </div>
+    <div *ngIf="value?.length" class="close-autocomplete" (click)="reset()">
+      <span class="material-symbols-outlined">close</span>
+    </div>
   </div>
   <div *ngIf="isFocused" class="input-autocomplete">
     <div class="arrow"></div>
