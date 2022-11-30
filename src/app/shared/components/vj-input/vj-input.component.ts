@@ -26,13 +26,13 @@ export class VjInputComponent implements AfterContentInit, OnInit, OnDestroy {
   filteredList!: VjInputData[];
   noResultsFound?: boolean;
 
-  get autocomplete(): boolean {
-    return !!this.list.length;
+  get hasAutocomplete(): boolean {
+    return ((!!this.list.length) && !this.waiving);
   }
 
   get isFocused(): boolean {
     const el = document.activeElement;
-    return (el?.id === this.input?.element?.nativeElement?.id);
+    return ((el?.id === this.input?.element?.nativeElement?.id) && this.hasAutocomplete);
   }
 
   get value(): string {
@@ -53,7 +53,7 @@ export class VjInputComponent implements AfterContentInit, OnInit, OnDestroy {
     this.searchingSub = this.searchingEvent
       .pipe(debounceTime(this.debounceTime))
       .subscribe((result) => {
-        if (!this.autocomplete)
+        if (!this.hasAutocomplete)
           return;
         var evaluated = this.list?.filter(x => x.label.toLowerCase().trim().includes(result.toLowerCase().trim()));
         this.filteredList = (evaluated?.length) ? evaluated : this.list;
@@ -63,7 +63,7 @@ export class VjInputComponent implements AfterContentInit, OnInit, OnDestroy {
   }
 
   ngAfterContentInit(): void {
-    if (this.input && this.autocomplete) {
+    if (this.input && this.hasAutocomplete) {
       this.input.element.nativeElement.addEventListener('keyup', () => {
         this.isLoading = true;
         this.noResultsFound = false;

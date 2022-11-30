@@ -10,7 +10,7 @@ export class VjInputDirective {
   constructor(
     public element: ElementRef<HTMLInputElement>
   ) {
-    element.nativeElement.id = `vj-input-${new Date().getTime()}`
+    element.nativeElement.id = `vj-input-${Math.random()}`
     element.nativeElement.type = this.type;
   }
 

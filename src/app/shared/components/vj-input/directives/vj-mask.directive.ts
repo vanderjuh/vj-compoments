@@ -33,7 +33,7 @@ export class VjMaskDirective implements AfterContentInit {
     element.nativeElement.addEventListener('keydown', (event) => {
       const keyValue = event.key as any;
 
-      if (this.skipKeys.includes(event.key) || event.ctrlKey) {
+      if (!this.mask?.length || this.skipKeys.includes(event.key) || event.ctrlKey) {
         return;
       }
 

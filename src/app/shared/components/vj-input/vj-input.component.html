@@ -26,11 +26,9 @@
     <span>{{hint}}</span>
   </div>
   <div *ngIf="invalid" [ngClass]="{'input-hint': true, 'waiving-invisible': waiving}">
-    <div *ngIf="waiving" class="waiving"></div>
     <span>Invalid field.</span>
   </div>
-  <div *ngIf="noResultsFound" [ngClass]="{'input-hint': true, 'waiving-invisible': waiving}">
-    <div *ngIf="waiving" class="waiving"></div>
+  <div *ngIf="noResultsFound" [ngClass]="{'input-error': true, 'waiving-invisible': waiving}">
     <span>No results found.</span>
   </div>
 </div>
