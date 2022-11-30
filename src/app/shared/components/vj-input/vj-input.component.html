@@ -1,10 +1,11 @@
 <div class="vj-input-component {{(invalid || noResultsFound) ? 'invalid-state' : ''}}">
-  <div *ngIf="label?.length" class="vj-input-label">
+  <div *ngIf="label?.length" [ngClass]="{'vj-input-label': true, 'waiving-invisible': waiving}">
     <label [for]="label">
       <span>{{label}}</span>
     </label>
   </div>
   <div class="input-container">
+    <div *ngIf="waiving" class="waiving"></div>
     <div style="width: 100%;">
       <ng-content></ng-content>
     </div>
@@ -21,7 +22,15 @@
         {{item.label}}</div>
     </div>
   </div>
-  <div *ngIf="!noResultsFound" class="input-hint"><span>{{hint}}</span></div>
-  <div *ngIf="invalid" class="input-error"><span>Invalid field.</span></div>
-  <div *ngIf="noResultsFound" class="input-error"><span>No results found.</span></div>
+  <div *ngIf="!noResultsFound" [ngClass]="{'input-hint': true, 'waiving-invisible': waiving}">
+    <span>{{hint}}</span>
+  </div>
+  <div *ngIf="invalid" [ngClass]="{'input-hint': true, 'waiving-invisible': waiving}">
+    <div *ngIf="waiving" class="waiving"></div>
+    <span>Invalid field.</span>
+  </div>
+  <div *ngIf="noResultsFound" [ngClass]="{'input-hint': true, 'waiving-invisible': waiving}">
+    <div *ngIf="waiving" class="waiving"></div>
+    <span>No results found.</span>
+  </div>
 </div>

@@ -17,6 +17,7 @@ export class VjInputComponent implements AfterContentInit, OnInit, OnDestroy {
   @Input() invalid?: boolean;
   @Input() list: VjInputData[] = [];
   @Input() debounceTime: number = 500;
+  @Input() waiving = false;
 
   @ContentChild(VjInputDirective) input?: VjInputDirective;
 

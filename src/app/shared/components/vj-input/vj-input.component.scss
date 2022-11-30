@@ -22,6 +22,7 @@ $input-autocomplete-height: 2rem;
   position: relative;
   .vj-input-label {
     width: 100%;
+    position: relative;
     label {
       width: $label-size;
       height: $label-height;
@@ -88,6 +89,15 @@ $input-autocomplete-height: 2rem;
         background-color: rgba(0, 0, 0, 0.1);
       }
     }
+    .waiving {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      animation: waiving alternate-reverse infinite 1s;
+      border-radius: $border-radius;
+    }
   }
   .input-hint {
     width: 100%;
@@ -108,6 +118,7 @@ $input-autocomplete-height: 2rem;
     border-radius: $border-radius;
     border: $input-border-size solid $input-border-color;
     animation: bottom-to-top ease-in-out 0.2s;
+    z-index: 1;
     .arrow {
       width: 1rem;
       height: 1rem;
@@ -152,6 +163,9 @@ $input-autocomplete-height: 2rem;
       }
     }
   }
+  .waiving-invisible {
+    visibility: hidden;
+  }
 }
 .invalid-state {
   .vj-input-label {
@@ -193,5 +207,14 @@ $input-autocomplete-height: 2rem;
   100% {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes waiving {
+  0% {
+    background-color: #eeeeee;
+  }
+  100% {
+    background-color: #dddddd;
   }
 }

@@ -11,4 +11,9 @@
       <option value="Test 2">Test 2</option>
     </select>
   </vj-input>
+  <vj-input [list]="list" class="text-field" label="Inform the Tax Id" [waiving]="true"
+    hint="Essa é uma diquinha muito muito boa. não vai perder!">
+    <input type="text" vjInput placeholder="12-AB-3456" aria-label="input field" vjMask mask="##-AA-####"
+      [uppercase]="true">
+  </vj-input>
 </div>
