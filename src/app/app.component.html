@@ -17,7 +17,8 @@
     <input type="text" vjInput placeholder="12-AB-3456" aria-label="input field" vjMask mask="##-AA-####"
       [uppercase]="true">
   </vj-input>
-  <vj-input [list]="list" class="text-field" label="Inform the Tax Id" hint="This is a text field with autocomplete.">
+  <vj-input [formControl]="formControlAutocomplete" [list]="list" class="text-field" label="Inform the Tax Id"
+    hint="This is a text field with autocomplete.">
     <input type="text" vjInput aria-label="input field">
   </vj-input>
   <vj-input class="text-field" label="Choose an option" hint="This is a native select field.">

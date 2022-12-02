@@ -1,5 +1,5 @@
 <div
-  [ngClass]="{'vj-input-component': true, 'invalid-state': (invalid || noResultsFound), 'disabled-state': isDisabled}">
+  [ngClass]="{'vj-input-component': true, 'invalid-state': ((invalid || noResultsFound) && interacted), 'disabled-state': isDisabled}">
   <div *ngIf="label?.length" [ngClass]="{'vj-input-label': true, 'waiving-invisible': waiving}">
     <label [for]="label">
       <span>{{label}}</span>
@@ -26,7 +26,8 @@
   <div *ngIf="!noResultsFound" [ngClass]="{'input-hint': true, 'waiving-invisible': waiving}">
     <span>{{hint}}</span>
   </div>
-  <div *ngIf="invalid" [ngClass]="{'input-error': true, 'waiving-invisible': waiving}">
+  <div *ngIf="(invalid && interacted && !noResultsFound)"
+    [ngClass]="{'input-error': true, 'waiving-invisible': waiving}">
     <span>{{errors}}</span>
   </div>
   <div *ngIf="noResultsFound" [ngClass]="{'input-error': true, 'waiving-invisible': waiving}">

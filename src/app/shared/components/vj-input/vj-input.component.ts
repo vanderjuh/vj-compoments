@@ -1,4 +1,4 @@
-import { AfterContentInit, Component, ContentChild, EventEmitter, Injector, Input, OnDestroy, OnInit } from '@angular/core';
+import { AfterContentInit, Component, ContentChild, EventEmitter, Injector, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { AbstractControl, ControlValueAccessor, FormControl, NgControl, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors } from '@angular/forms';
 
 import { debounceTime, Subscription } from 'rxjs';
@@ -30,6 +30,7 @@ export class VjInputComponent implements AfterContentInit, OnInit, OnDestroy, Co
   @Input() list: VjInputData[] = [];
   @Input() debounceTime: number = 500;
   @Input() waiving = false;
+  @Output() selected = new EventEmitter<VjInputData>();
 
   @ContentChild(VjInputDirective) input?: VjInputDirective;
 
@@ -83,6 +84,10 @@ export class VjInputComponent implements AfterContentInit, OnInit, OnDestroy, Co
     return (this._disabled ?? this._formControl?.disabled ?? false);
   }
 
+  get interacted(): boolean {
+    return ((this._formControl?.dirty) ?? false);
+  }
+
   private searchingEvent = new EventEmitter<string>();
   private searchingSub!: Subscription;
 
@@ -103,7 +108,14 @@ export class VjInputComponent implements AfterContentInit, OnInit, OnDestroy, Co
           return;
         var evaluated = this.list?.filter(x => x.label.toLowerCase().trim().includes(result.toLowerCase().trim()));
         this.filteredList = (evaluated?.length) ? evaluated : this.list;
-        this.noResultsFound = !evaluated?.length;
+        this.noResultsFound = (evaluated?.length ? false : true);
+        if (this.noResultsFound) {
+          this._formControl?.setErrors({ 'noResultsFound': true })
+        } else {
+          const errors = (this._formControl?.errors ?? {});
+          delete errors['noResultsFound'];
+          this._formControl?.setErrors(errors);
+        }
         this.isLoading = false;
       })
   }
@@ -127,13 +139,16 @@ export class VjInputComponent implements AfterContentInit, OnInit, OnDestroy, Co
 
   onClickAutocompleteItem(event: VjInputData): void {
     if (this.input) {
-      this.input.element.nativeElement.value = (this.input && !event.disabled) ? event.label : '';
+      this.input.element.nativeElement.value = ((this.input && !event.disabled) ? event.label : '');
       this.noResultsFound = false;
+      this._formControl?.setValue(event.value);
+      this.selected.emit(event);
     }
   }
 
   reset(): void {
     if (this.input) {
+      this._formControl?.reset();
       this.input.element.nativeElement.value = '';
       this.noResultsFound = false;
       this.markAsTouched();
@@ -187,7 +202,12 @@ export class VjInputComponent implements AfterContentInit, OnInit, OnDestroy, Co
 
   private setValue(): void {
     if (this.input) {
-      this.input.element.nativeElement.value = this._value;
+      if (this.hasAutocomplete) {
+        const associatedItem = this.list.find(x => x.value === this._value);
+        this.input.element.nativeElement.value = (associatedItem ? associatedItem.label : this._value);
+      } else {
+        this.input.element.nativeElement.value = this._value;
+      }
     }
   }
 
@@ -209,18 +229,25 @@ export class VjInputComponent implements AfterContentInit, OnInit, OnDestroy, Co
       this.input.element.nativeElement.addEventListener('focusout', () => {
         this.isFocused;
         this.filteredList = this.list;
+        this._formControl?.markAsDirty();
       });
     }
   }
 
   setReactiveEvents() {
     if (this.input) {
-      this.input.element.nativeElement.addEventListener('input', (event) => {
-        this.onChange(this.input?.element?.nativeElement?.value);
+      this.input.element.nativeElement.addEventListener('input', () => {
+        if (!this.hasAutocomplete) {
+          this.onChange(this.input?.element?.nativeElement?.value);
+        }
       })
       if (!this.hasAutocomplete) {
         this.input.element.nativeElement.addEventListener('focus', () => {
           this.markAsTouched();
+        });
+
+        this.input.element.nativeElement.addEventListener('focusout', () => {
+          this._formControl?.markAsDirty();
         });
       }
     }
