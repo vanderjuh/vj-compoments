@@ -3,11 +3,15 @@
 
 $input-height: 2rem;
 $input-background-color: white;
+$waive-in-color: #eeeeee;
+$waive-out-color: #dddddd;
+$error-color: red;
+$disabled-color: #eeeeee;
 
 $font-color: rgba(0, 0, 0, 0.5);
 $input-border-size: 1px;
-$input-border-color: rgba(0, 0, 0, 0.5);
-$input-border-focused-color: rgba(0, 0, 0, 1);
+$input-border-color: rgba(0, 0, 0, 0.2);
+$input-border-focused-color: rgba(0, 0, 0, 0.5);
 $input-hint-error-heigth: 1rem;
 
 $label-size: 90%;
@@ -54,6 +58,7 @@ $input-autocomplete-height: 2rem;
         padding: unset;
         border: unset;
         color: $font-color;
+        background-color: transparent;
         &::placeholder {
           color: rgba(0, 0, 0, 0.4);
         }
@@ -107,6 +112,7 @@ $input-autocomplete-height: 2rem;
     white-space: nowrap;
     text-overflow: ellipsis;
     animation: bottom-to-top ease-in-out 0.2s;
+    color: $font-color;
   }
   .input-autocomplete {
     width: 100%;
@@ -170,19 +176,22 @@ $input-autocomplete-height: 2rem;
 .invalid-state {
   .vj-input-label {
     label {
-      color: red;
+      color: $error-color;
     }
   }
   .input-container {
-    border: $input-border-size solid red;
+    border: $input-border-size solid $error-color;
     ::ng-deep {
       input,
       select {
-        color: red;
+        color: $error-color;
       }
     }
     &:focus-within {
-      border: $input-border-size solid red;
+      border: $input-border-size solid $error-color;
+    }
+    .close-autocomplete {
+      color: $error-color;
     }
   }
   .input-hint {
@@ -195,8 +204,15 @@ $input-autocomplete-height: 2rem;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-    color: red;
+    color: $error-color;
     animation: bottom-to-top ease-in-out 0.2s;
+  }
+}
+.disabled-state {
+  .input-container {
+    background-color: $disabled-color;
+  }
+  .input-hint {
   }
 }
 @keyframes bottom-to-top {
@@ -212,9 +228,9 @@ $input-autocomplete-height: 2rem;
 
 @keyframes waiving {
   0% {
-    background-color: #eeeeee;
+    background-color: $waive-in-color;
   }
   100% {
-    background-color: #dddddd;
+    background-color: $waive-out-color;
   }
 }

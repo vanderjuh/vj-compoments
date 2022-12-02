@@ -1,5 +1,5 @@
-import { AfterContentInit, Component, ContentChild, EventEmitter, Input, OnDestroy, OnInit } from '@angular/core';
-import { AbstractControl, ControlValueAccessor, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors } from '@angular/forms';
+import { AfterContentInit, Component, ContentChild, EventEmitter, Injector, Input, OnDestroy, OnInit } from '@angular/core';
+import { AbstractControl, ControlValueAccessor, FormControl, NgControl, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors } from '@angular/forms';
 
 import { debounceTime, Subscription } from 'rxjs';
 
@@ -41,10 +41,11 @@ export class VjInputComponent implements AfterContentInit, OnInit, OnDestroy, Co
   onTouched = () => { };
 
   touched = false;
-  disabled = false;
+
+  protected _formControl?: (AbstractControl<any, any> | null);
 
   private _value = '';
-  protected _formControl?: AbstractControl<any, any>;
+  private _disabled: boolean = false;
 
   get hasAutocomplete(): boolean {
     return ((!!this.list.length) && !this.waiving);
@@ -68,7 +69,6 @@ export class VjInputComponent implements AfterContentInit, OnInit, OnDestroy, Co
     if (this._formControl?.errors) {
       const errors = Object.values(this._formControl.errors);
       const firstError = errors.length ? errors[0] : defaultError;
-      console.log(errors)
       switch (firstError) {
         case 'true':
           return defaultError;
@@ -79,10 +79,16 @@ export class VjInputComponent implements AfterContentInit, OnInit, OnDestroy, Co
     return defaultError;
   }
 
+  get isDisabled(): boolean {
+    return (this._disabled ?? this._formControl?.disabled ?? false);
+  }
+
   private searchingEvent = new EventEmitter<string>();
   private searchingSub!: Subscription;
 
-  constructor() { }
+  constructor(
+    private injector: Injector,
+  ) { }
 
   ngOnDestroy(): void {
     this.searchingSub?.unsubscribe();
@@ -102,10 +108,21 @@ export class VjInputComponent implements AfterContentInit, OnInit, OnDestroy, Co
       })
   }
 
+  setFormControl() {
+    const ngControl = this.injector.get(NgControl, null);
+    if (ngControl) {
+      this._formControl = (ngControl.control as FormControl);
+    } else {
+      // Component is missing form control binding
+    }
+  }
+
   ngAfterContentInit(): void {
+    this.setFormControl();
     this.setValue();
     this.setAutocomplete();
     this.setReactiveEvents();
+    this.markAsDisabled(this._formControl ? this._formControl.disabled : undefined);
   }
 
   onClickAutocompleteItem(event: VjInputData): void {
@@ -147,11 +164,24 @@ export class VjInputComponent implements AfterContentInit, OnInit, OnDestroy, Co
   }
 
   setDisabledState?(isDisabled: boolean): void {
-    this.disabled = isDisabled;
+    this.markAsDisabled(isDisabled);
+  }
+
+  private markAsDisabled(status?: boolean) {
+    if (this._formControl || status != null) {
+      this._disabled = (status ?? false);
+      if (this.input) {
+        this.input.element.nativeElement.disabled = this._disabled;
+      }
+      return;
+    }
+    if (!this._formControl && this.input) {
+      this._disabled = this.input.element.nativeElement.disabled;
+      return;
+    }
   }
 
   validate(control: AbstractControl): (ValidationErrors | null) {
-    this._formControl = control;
     return control.validator;
   }
 

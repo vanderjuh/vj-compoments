@@ -1,4 +1,5 @@
-<div class="vj-input-component {{(invalid || noResultsFound) ? 'invalid-state' : ''}}">
+<div
+  [ngClass]="{'vj-input-component': true, 'invalid-state': (invalid || noResultsFound), 'disabled-state': isDisabled}">
   <div *ngIf="label?.length" [ngClass]="{'vj-input-label': true, 'waiving-invisible': waiving}">
     <label [for]="label">
       <span>{{label}}</span>
