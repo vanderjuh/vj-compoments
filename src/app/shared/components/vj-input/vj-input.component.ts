@@ -111,9 +111,9 @@ export class VjInputComponent implements AfterContentInit, OnInit, OnDestroy, Co
 
   onClickAutocompleteItem(event: VjInputData): void {
     if (this._input) {
-      this._input.element.nativeElement.value = ((this._input && !event.disabled) ? event.label : '');
       this.noResultsFound = false;
       this._formControl?.control?.setValue(event.value);
+      this._input.element.nativeElement.value = ((this._input && !event.disabled) ? event.label : '');
       this.selected.emit(event);
     }
   }
