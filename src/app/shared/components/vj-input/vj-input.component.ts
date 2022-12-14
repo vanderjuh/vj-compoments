@@ -4,7 +4,10 @@ import { AbstractControl, ControlValueAccessor, FormControlDirective, Validation
 import { debounceTime, Subscription } from 'rxjs';
 
 import { VjInputData } from './classes/vj-input-data.class';
+import { VjInputValidator } from './classes/vj-input-validator.class';
 import { VjInputDirective } from './directives/vj-input.directive';
+import { VjInputErrorKeyEnum } from './enums/vj-input-error-key.enum';
+import { IVjInputValidator } from './interfaces/vj-input-validator.interface';
 
 @Component({
   selector: 'vj-input',
@@ -18,6 +21,7 @@ export class VjInputComponent implements AfterContentInit, OnInit, OnDestroy, Co
   @Input() list: VjInputData[] = [];
   @Input() debounceTime: number = 500;
   @Input() waiving = false;
+  @Input() validator!: IVjInputValidator;
   @Output() selected = new EventEmitter<VjInputData>();
 
   @ContentChild(VjInputDirective) private _input?: VjInputDirective;
@@ -26,13 +30,10 @@ export class VjInputComponent implements AfterContentInit, OnInit, OnDestroy, Co
   isLoading!: boolean;
   filteredList!: VjInputData[];
   noResultsFound?: boolean;
+  touched = false;
 
   onChange = (_: any) => { };
   onTouched = () => { };
-
-  touched = false;
-
-  private _value = '';
 
   get hasAutocomplete(): boolean {
     return ((!!this.list.length) && !this.waiving);
@@ -52,18 +53,28 @@ export class VjInputComponent implements AfterContentInit, OnInit, OnDestroy, Co
   }
 
   get errors(): string {
-    const defaultError = 'Invalid field.';
-    if (this._formControl?.errors) {
-      const errors = Object.values(this._formControl.errors);
-      const firstError = errors.length ? errors[0] : defaultError;
-      switch (firstError) {
-        case 'true':
-          return defaultError;
-        default:
-          return defaultError;
-      }
+    return this.getErrorMessage(this._formControl?.errors);
+  }
+
+  private _value = '';
+
+  constructor() {
+    this.setValidator();
+  }
+
+  private setValidator() {
+    this.validator = (this.validator ? this.validator : new VjInputValidator());
+  }
+
+  private getErrorMessage(errors: ValidationErrors | null | undefined): string {
+    if (!errors || !Object.keys(errors)?.length) {
+      return this.validator.defaultError;
     }
-    return defaultError;
+    const errorKeys = Object.keys(errors);
+    const firstErrorKey = (errorKeys[0] as VjInputErrorKeyEnum);
+    const currentLength = `${this._input?.element.nativeElement.value.length ?? 0}`;
+    const requiredLength = `${errors[firstErrorKey][this.validator.ngRequiredLengthKey] ?? currentLength}`;
+    return this.validator.get({ key: firstErrorKey, currentLength, requiredLength })
   }
 
   get isDisabled(): boolean {
@@ -92,10 +103,10 @@ export class VjInputComponent implements AfterContentInit, OnInit, OnDestroy, Co
         this.filteredList = (evaluated?.length) ? evaluated : this.list;
         this.noResultsFound = (evaluated?.length ? false : true);
         if (this.noResultsFound) {
-          this._formControl?.control?.setErrors({ 'noResultsFound': true })
+          this._formControl?.control?.setErrors({ [VjInputErrorKeyEnum.noResultsFound]: true })
         } else {
           const errors = (this._formControl?.errors ?? {});
-          delete errors['noResultsFound'];
+          delete errors[VjInputErrorKeyEnum.noResultsFound];
           this._formControl?.control?.setErrors(errors);
         }
         this.isLoading = false;

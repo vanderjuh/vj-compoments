@@ -1,6 +1,11 @@
 <div class="page">
-  <vj-input class="text-field" label="Inform the Tax Id" hint="Essa é uma diquinha muito muito boa. não vai perder!">
+  <vj-input class="text-field" label="Inform the Tax Id" hint="This is a form field">
     <input [formControl]="formControl" type="text" vjInput aria-label="input field" vjMask [uppercase]="true">
+  </vj-input>
+  <vj-input class="text-field" label="Inform the Tax Id" [validator]="customValidator"
+    hint="This is a form field with custom validator.">
+    <input [formControl]="customValidatorFormControl" type="text" vjInput aria-label="input field" vjMask
+      [uppercase]="true">
   </vj-input>
   <vj-input class="text-field" label="Inform the Tax Id" hint="This is a disabled form control field.">
     <input [formControl]="disabledFormControl" type="text" vjInput aria-label="input field" vjMask [uppercase]="true">
