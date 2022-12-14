@@ -1,5 +1,5 @@
 import { AfterContentInit, Component, ContentChild, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { AbstractControl, ControlValueAccessor, FormControlDirective, ValidationErrors } from '@angular/forms';
+import { AbstractControl, FormControlDirective, ValidationErrors } from '@angular/forms';
 
 import { debounceTime, Subscription } from 'rxjs';
 
@@ -14,7 +14,7 @@ import { IVjInputValidator } from './interfaces/vj-input-validator.interface';
   templateUrl: './vj-input.component.html',
   styleUrls: ['./vj-input.component.scss']
 })
-export class VjInputComponent implements AfterContentInit, OnInit, OnDestroy, ControlValueAccessor {
+export class VjInputComponent implements AfterContentInit, OnInit, OnDestroy {
 
   @Input() label?: string;
   @Input() hint?: string;
@@ -30,10 +30,6 @@ export class VjInputComponent implements AfterContentInit, OnInit, OnDestroy, Co
   isLoading!: boolean;
   filteredList!: VjInputData[];
   noResultsFound?: boolean;
-  touched = false;
-
-  onChange = (_: any) => { };
-  onTouched = () => { };
 
   get hasAutocomplete(): boolean {
     return ((!!this.list.length) && !this.waiving);
@@ -56,7 +52,9 @@ export class VjInputComponent implements AfterContentInit, OnInit, OnDestroy, Co
     return this.getErrorMessage(this._formControl?.errors);
   }
 
-  private _value = '';
+  private get _value(): string {
+    return (this._formControl?.control.value ?? this._input?.element.nativeElement.value);
+  };
 
   constructor() {
     this.setValidator();
@@ -116,8 +114,7 @@ export class VjInputComponent implements AfterContentInit, OnInit, OnDestroy, Co
   ngAfterContentInit(): void {
     this.setValue();
     this.setAutocomplete();
-    this.setReactiveEvents();
-    this.markAsDisabled(this.isDisabled);
+    this.checkDisableState(this.isDisabled);
   }
 
   onClickAutocompleteItem(event: VjInputData): void {
@@ -134,38 +131,10 @@ export class VjInputComponent implements AfterContentInit, OnInit, OnDestroy, Co
       this._formControl?.reset();
       this._input.element.nativeElement.value = '';
       this.noResultsFound = false;
-      this.markAsTouched();
-      this.onChange(this._input.element.nativeElement.value);
     }
   }
 
-  writeValue(value: any): void {
-    this._value = value;
-    if (this._input) {
-      this.setValue();
-    }
-  }
-
-  registerOnChange(fn: any): void {
-    this.onChange = fn;
-  }
-
-  registerOnTouched(fn: any): void {
-    this.onTouched = fn;
-  }
-
-  markAsTouched() {
-    if (!this.touched) {
-      this.onTouched();
-      this.touched = true;
-    }
-  }
-
-  setDisabledState?(isDisabled: boolean): void {
-    this.markAsDisabled(isDisabled);
-  }
-
-  private markAsDisabled(status?: boolean) {
+  private checkDisableState(status?: boolean) {
     if (this._formControl || status != null) {
       if (this._input) {
         this._input.element.nativeElement.disabled = (status ?? false);
@@ -201,32 +170,20 @@ export class VjInputComponent implements AfterContentInit, OnInit, OnDestroy, Co
         if (selectedValue) {
           this.filteredList = [selectedValue];
         }
-        this.markAsTouched();
       });
       this._input.element.nativeElement.addEventListener('focusout', () => {
         this.isFocused;
         this.filteredList = this.list;
-        this._formControl?.control?.markAsDirty();
+        this.markAsDirty();
       });
     }
   }
 
-  setReactiveEvents() {
-    if (this._input) {
-      this._input.element.nativeElement.addEventListener('input', () => {
-        if (!this.hasAutocomplete) {
-          this.onChange(this._input?.element?.nativeElement?.value);
-        }
-      })
-      if (!this.hasAutocomplete) {
-        this._input.element.nativeElement.addEventListener('focus', () => {
-          this.markAsTouched();
-        });
+  markAsDirty(): void {
+    this._formControl?.control?.markAsDirty();
+  }
 
-        this._input.element.nativeElement.addEventListener('focusout', () => {
-          this._formControl?.control?.markAsDirty();
-        });
-      }
-    }
+  focusCursor() {
+    this._input?.element.nativeElement.focus();
   }
 }

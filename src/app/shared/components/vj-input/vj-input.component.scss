@@ -83,6 +83,7 @@ $input-autocomplete-height: 2rem;
       border-radius: 50%;
       background-color: transparent;
       transition: all ease-in-out 0.2s;
+      border: unset;
       .material-symbols-outlined {
         font-size: smaller !important;
       }
