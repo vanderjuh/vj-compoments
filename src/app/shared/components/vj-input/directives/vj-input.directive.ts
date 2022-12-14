@@ -10,8 +10,25 @@ export class VjInputDirective {
   constructor(
     public element: ElementRef<HTMLInputElement>
   ) {
-    element.nativeElement.id = `vj-input-${Math.random()}`
+    this.setElementId(element);
+    this.setType(element);
+  }
+
+  private setType(element: ElementRef<HTMLInputElement>): void {
     element.nativeElement.type = this.type;
   }
 
+  private setElementId(element: ElementRef<HTMLInputElement>): void {
+    let id = this.getNewElementId();
+    let existingEl = document.getElementById(id);
+    while (existingEl !== null) {
+      id = this.getNewElementId();
+      existingEl = document.getElementById(id);
+    }
+    element.nativeElement.id = id;
+  }
+
+  private getNewElementId(): string {
+    return `vj-input-${Math.random()}`;
+  }
 }

@@ -1,27 +1,25 @@
 <div class="page">
   <vj-input class="text-field" label="Inform the Tax Id" hint="This is a form field">
-    <input [formControl]="formControl" type="text" vjInput aria-label="input field" vjMask [uppercase]="true">
+    <input [formControl]="formControl" vjInput aria-label="input field" vjMask [uppercase]="true">
   </vj-input>
   <vj-input class="text-field" label="Inform the Tax Id" [validator]="customValidator"
     hint="This is a form field with custom validator.">
-    <input [formControl]="customValidatorFormControl" type="text" vjInput aria-label="input field" vjMask
-      [uppercase]="true">
+    <input [formControl]="customValidatorFormControl" vjInput aria-label="input field" vjMask [uppercase]="true">
   </vj-input>
   <vj-input class="text-field" label="Inform the Tax Id" hint="This is a disabled form control field.">
-    <input [formControl]="disabledFormControl" type="text" vjInput aria-label="input field" vjMask [uppercase]="true">
+    <input [formControl]="disabledFormControl" vjInput aria-label="input field" vjMask [uppercase]="true">
   </vj-input>
   <vj-input class="text-field" label="Inform the Tax Id" hint="This is a disabled field.">
-    <input type="text" disabled vjInput aria-label="input field" vjMask [uppercase]="true">
+    <input disabled vjInput aria-label="input field" vjMask [uppercase]="true">
   </vj-input>
   <vj-input class="text-field" label="Inform the Tax Id" hint="This is a simple text field.">
-    <input type="text" vjInput aria-label="input field" vjMask [uppercase]="true">
+    <input vjInput aria-label="input field" vjMask [uppercase]="true">
   </vj-input>
   <vj-input class="text-field" label="Inform the Tax Id" hint="This is a text field with mask.">
-    <input type="text" vjInput placeholder="12-AB-3456" aria-label="input field" vjMask mask="##-AA-####"
-      [uppercase]="true">
+    <input vjInput placeholder="12-AB-3456" aria-label="input field" vjMask mask="##-AA-####" [uppercase]="true">
   </vj-input>
   <vj-input [list]="list" class="text-field" label="Inform the Tax Id" hint="This is a text field with autocomplete.">
-    <input [formControl]="formControlAutocomplete" type="text" vjInput aria-label="input field">
+    <input [formControl]="formControlAutocomplete" vjInput aria-label="input field">
   </vj-input>
   <vj-input class="text-field" label="Choose an option" hint="This is a native select field.">
     <select>
@@ -31,7 +29,6 @@
   </vj-input>
   <vj-input [list]="list" class="text-field" label="Inform the Tax Id" [waiving]="true"
     hint="Essa é uma diquinha muito muito boa. não vai perder!">
-    <input type="text" vjInput placeholder="12-AB-3456" aria-label="input field" vjMask mask="##-AA-####"
-      [uppercase]="true">
+    <input vjInput placeholder="12-AB-3456" aria-label="input field" vjMask mask="##-AA-####" [uppercase]="true">
   </vj-input>
 </div>
