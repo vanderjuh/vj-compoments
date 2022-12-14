@@ -20,8 +20,8 @@ export class VjInputComponent implements AfterContentInit, OnInit, OnDestroy, Co
   @Input() waiving = false;
   @Output() selected = new EventEmitter<VjInputData>();
 
-  @ContentChild(VjInputDirective) input?: VjInputDirective;
-  @ContentChild(FormControlDirective) _formControl?: FormControlDirective;
+  @ContentChild(VjInputDirective) private _input?: VjInputDirective;
+  @ContentChild(FormControlDirective) private _formControl?: FormControlDirective;
 
   isLoading!: boolean;
   filteredList!: VjInputData[];
@@ -33,7 +33,6 @@ export class VjInputComponent implements AfterContentInit, OnInit, OnDestroy, Co
   touched = false;
 
   private _value = '';
-  private _disabled: boolean = false;
 
   get hasAutocomplete(): boolean {
     return ((!!this.list.length) && !this.waiving);
@@ -41,11 +40,11 @@ export class VjInputComponent implements AfterContentInit, OnInit, OnDestroy, Co
 
   get isFocused(): boolean {
     const el = document.activeElement;
-    return ((el?.id === this.input?.element?.nativeElement?.id) && this.hasAutocomplete);
+    return ((el?.id === this._input?.element?.nativeElement?.id) && this.hasAutocomplete);
   }
 
   get value(): string {
-    return (this.input?.element.nativeElement.value ?? '');
+    return (this._input?.element.nativeElement.value ?? '');
   }
 
   get invalid(): boolean {
@@ -68,7 +67,7 @@ export class VjInputComponent implements AfterContentInit, OnInit, OnDestroy, Co
   }
 
   get isDisabled(): boolean {
-    return (this._disabled ?? this._formControl?.disabled ?? false);
+    return (this._formControl?.disabled ?? this._input?.element.nativeElement.disabled ?? false);
   }
 
   get interacted(): boolean {
@@ -107,12 +106,12 @@ export class VjInputComponent implements AfterContentInit, OnInit, OnDestroy, Co
     this.setValue();
     this.setAutocomplete();
     this.setReactiveEvents();
-    this.markAsDisabled(this._formControl?.control?.disabled ?? false);
+    this.markAsDisabled(this.isDisabled);
   }
 
   onClickAutocompleteItem(event: VjInputData): void {
-    if (this.input) {
-      this.input.element.nativeElement.value = ((this.input && !event.disabled) ? event.label : '');
+    if (this._input) {
+      this._input.element.nativeElement.value = ((this._input && !event.disabled) ? event.label : '');
       this.noResultsFound = false;
       this._formControl?.control?.setValue(event.value);
       this.selected.emit(event);
@@ -120,18 +119,18 @@ export class VjInputComponent implements AfterContentInit, OnInit, OnDestroy, Co
   }
 
   reset(): void {
-    if (this.input) {
+    if (this._input) {
       this._formControl?.reset();
-      this.input.element.nativeElement.value = '';
+      this._input.element.nativeElement.value = '';
       this.noResultsFound = false;
       this.markAsTouched();
-      this.onChange(this.input.element.nativeElement.value);
+      this.onChange(this._input.element.nativeElement.value);
     }
   }
 
   writeValue(value: any): void {
     this._value = value;
-    if (this.input) {
+    if (this._input) {
       this.setValue();
     }
   }
@@ -157,15 +156,9 @@ export class VjInputComponent implements AfterContentInit, OnInit, OnDestroy, Co
 
   private markAsDisabled(status?: boolean) {
     if (this._formControl || status != null) {
-      this._disabled = (status ?? false);
-      if (this.input) {
-        this.input.element.nativeElement.disabled = this._disabled;
+      if (this._input) {
+        this._input.element.nativeElement.disabled = (status ?? false);
       }
-      return;
-    }
-    if (!this._formControl && this.input) {
-      this._disabled = this.input.element.nativeElement.disabled;
-      return;
     }
   }
 
@@ -174,24 +167,24 @@ export class VjInputComponent implements AfterContentInit, OnInit, OnDestroy, Co
   }
 
   private setValue(): void {
-    if (this.input) {
+    if (this._input) {
       if (this.hasAutocomplete) {
         const associatedItem = this.list.find(x => x.value === this._value);
-        this.input.element.nativeElement.value = (associatedItem ? associatedItem.label : this._value);
+        this._input.element.nativeElement.value = (associatedItem ? associatedItem.label : this._value);
       } else {
-        this.input.element.nativeElement.value = this._value;
+        this._input.element.nativeElement.value = this._value;
       }
     }
   }
 
   private setAutocomplete(): void {
-    if (this.input && this.hasAutocomplete) {
-      this.input.element.nativeElement.addEventListener('keyup', () => {
+    if (this._input && this.hasAutocomplete) {
+      this._input.element.nativeElement.addEventListener('keyup', () => {
         this.isLoading = true;
         this.noResultsFound = false;
         this.searchingEvent.emit(this.value);
       });
-      this.input.element.nativeElement.addEventListener('focus', () => {
+      this._input.element.nativeElement.addEventListener('focus', () => {
         this.isFocused;
         const selectedValue = this.list.find(x => this.value.length && x.label.toLowerCase().trim().includes(this.value.toLowerCase().trim()));
         if (selectedValue) {
@@ -199,7 +192,7 @@ export class VjInputComponent implements AfterContentInit, OnInit, OnDestroy, Co
         }
         this.markAsTouched();
       });
-      this.input.element.nativeElement.addEventListener('focusout', () => {
+      this._input.element.nativeElement.addEventListener('focusout', () => {
         this.isFocused;
         this.filteredList = this.list;
         this._formControl?.control?.markAsDirty();
@@ -208,18 +201,18 @@ export class VjInputComponent implements AfterContentInit, OnInit, OnDestroy, Co
   }
 
   setReactiveEvents() {
-    if (this.input) {
-      this.input.element.nativeElement.addEventListener('input', () => {
+    if (this._input) {
+      this._input.element.nativeElement.addEventListener('input', () => {
         if (!this.hasAutocomplete) {
-          this.onChange(this.input?.element?.nativeElement?.value);
+          this.onChange(this._input?.element?.nativeElement?.value);
         }
       })
       if (!this.hasAutocomplete) {
-        this.input.element.nativeElement.addEventListener('focus', () => {
+        this._input.element.nativeElement.addEventListener('focus', () => {
           this.markAsTouched();
         });
 
-        this.input.element.nativeElement.addEventListener('focusout', () => {
+        this._input.element.nativeElement.addEventListener('focusout', () => {
           this._formControl?.control?.markAsDirty();
         });
       }
