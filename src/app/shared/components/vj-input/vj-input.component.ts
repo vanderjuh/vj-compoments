@@ -1,5 +1,5 @@
-import { AfterContentInit, Component, ContentChild, EventEmitter, Injector, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { AbstractControl, ControlValueAccessor, FormControl, NgControl, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors } from '@angular/forms';
+import { AfterContentInit, Component, ContentChild, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { AbstractControl, ControlValueAccessor, FormControlDirective, ValidationErrors } from '@angular/forms';
 
 import { debounceTime, Subscription } from 'rxjs';
 
@@ -9,19 +9,7 @@ import { VjInputDirective } from './directives/vj-input.directive';
 @Component({
   selector: 'vj-input',
   templateUrl: './vj-input.component.html',
-  styleUrls: ['./vj-input.component.scss'],
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      multi: true,
-      useExisting: VjInputComponent
-    },
-    {
-      provide: NG_VALIDATORS,
-      multi: true,
-      useExisting: VjInputComponent
-    }
-  ]
+  styleUrls: ['./vj-input.component.scss']
 })
 export class VjInputComponent implements AfterContentInit, OnInit, OnDestroy, ControlValueAccessor {
 
@@ -33,6 +21,7 @@ export class VjInputComponent implements AfterContentInit, OnInit, OnDestroy, Co
   @Output() selected = new EventEmitter<VjInputData>();
 
   @ContentChild(VjInputDirective) input?: VjInputDirective;
+  @ContentChild(FormControlDirective) _formControl?: FormControlDirective;
 
   isLoading!: boolean;
   filteredList!: VjInputData[];
@@ -42,8 +31,6 @@ export class VjInputComponent implements AfterContentInit, OnInit, OnDestroy, Co
   onTouched = () => { };
 
   touched = false;
-
-  protected _formControl?: (AbstractControl<any, any> | null);
 
   private _value = '';
   private _disabled: boolean = false;
@@ -91,10 +78,6 @@ export class VjInputComponent implements AfterContentInit, OnInit, OnDestroy, Co
   private searchingEvent = new EventEmitter<string>();
   private searchingSub!: Subscription;
 
-  constructor(
-    private injector: Injector,
-  ) { }
-
   ngOnDestroy(): void {
     this.searchingSub?.unsubscribe();
   }
@@ -110,38 +93,28 @@ export class VjInputComponent implements AfterContentInit, OnInit, OnDestroy, Co
         this.filteredList = (evaluated?.length) ? evaluated : this.list;
         this.noResultsFound = (evaluated?.length ? false : true);
         if (this.noResultsFound) {
-          this._formControl?.setErrors({ 'noResultsFound': true })
+          this._formControl?.control?.setErrors({ 'noResultsFound': true })
         } else {
           const errors = (this._formControl?.errors ?? {});
           delete errors['noResultsFound'];
-          this._formControl?.setErrors(errors);
+          this._formControl?.control?.setErrors(errors);
         }
         this.isLoading = false;
       })
   }
 
-  setFormControl() {
-    const ngControl = this.injector.get(NgControl, null);
-    if (ngControl) {
-      this._formControl = (ngControl.control as FormControl);
-    } else {
-      // Component is missing form control binding
-    }
-  }
-
   ngAfterContentInit(): void {
-    this.setFormControl();
     this.setValue();
     this.setAutocomplete();
     this.setReactiveEvents();
-    this.markAsDisabled(this._formControl ? this._formControl.disabled : undefined);
+    this.markAsDisabled(this._formControl?.control?.disabled ?? false);
   }
 
   onClickAutocompleteItem(event: VjInputData): void {
     if (this.input) {
       this.input.element.nativeElement.value = ((this.input && !event.disabled) ? event.label : '');
       this.noResultsFound = false;
-      this._formControl?.setValue(event.value);
+      this._formControl?.control?.setValue(event.value);
       this.selected.emit(event);
     }
   }
@@ -229,7 +202,7 @@ export class VjInputComponent implements AfterContentInit, OnInit, OnDestroy, Co
       this.input.element.nativeElement.addEventListener('focusout', () => {
         this.isFocused;
         this.filteredList = this.list;
-        this._formControl?.markAsDirty();
+        this._formControl?.control?.markAsDirty();
       });
     }
   }
@@ -247,7 +220,7 @@ export class VjInputComponent implements AfterContentInit, OnInit, OnDestroy, Co
         });
 
         this.input.element.nativeElement.addEventListener('focusout', () => {
-          this._formControl?.markAsDirty();
+          this._formControl?.control?.markAsDirty();
         });
       }
     }
