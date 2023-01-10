@@ -6,6 +6,7 @@ $input-background-color: white;
 $waive-in-color: #eeeeee;
 $waive-out-color: #dddddd;
 $error-color: red;
+$required-label-color: red;
 $disabled-color: #eeeeee;
 
 $font-color: rgba(0, 0, 0, 0.5);
@@ -37,6 +38,9 @@ $input-autocomplete-height: 2rem;
       margin: unset;
       color: $font-color;
       font-size: small;
+      .required-label {
+        color: $required-label-color;
+      }
     }
   }
   .input-container {

@@ -22,6 +22,7 @@ export class VjInputComponent implements AfterContentInit, OnInit, OnDestroy {
   @Input() debounceTime: number = 500;
   @Input() waiving = false;
   @Input() validator!: IVjInputValidator;
+  @Input() requiredLabel = ' * ';
   @Output() selected = new EventEmitter<VjInputData>();
 
   @ContentChild(VjInputDirective) private _input?: VjInputDirective;

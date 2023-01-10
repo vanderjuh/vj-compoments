@@ -3,6 +3,7 @@
   <div *ngIf="label?.length" [ngClass]="{'vj-input-label': true, 'waiving-invisible': waiving}">
     <label [for]="label">
       <span>{{label}}</span>
+      <span class="required-label" *ngIf="requiredLabel?.length">{{requiredLabel}}</span>
     </label>
   </div>
   <div class="input-container">
