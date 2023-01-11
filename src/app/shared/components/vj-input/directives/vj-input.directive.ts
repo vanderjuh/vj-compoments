@@ -10,7 +10,7 @@ export class VjInputDirective {
   constructor(
     public element: ElementRef<HTMLInputElement>
   ) {
-    this.setElementId(element);
+    this.checkElementId(element);
     this.setType(element);
   }
 
@@ -18,14 +18,14 @@ export class VjInputDirective {
     element.nativeElement.type = this.type;
   }
 
-  private setElementId(element: ElementRef<HTMLInputElement>): void {
+  private checkElementId(element: ElementRef<HTMLInputElement>): void {
     let id = this.getNewElementId();
     let existingEl = document.getElementById(id);
     while (existingEl !== null) {
       id = this.getNewElementId();
       existingEl = document.getElementById(id);
     }
-    element.nativeElement.id = id;
+    element.nativeElement.id = (element.nativeElement?.id?.length ? element.nativeElement.id : id);
   }
 
   private getNewElementId(): string {

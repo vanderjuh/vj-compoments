@@ -1,6 +1,9 @@
 <div class="page">
+  <vj-input class="text-field" label="Inform the Tax Id" hint="This is a form field with anchoring">
+    <input id="input-anchor-1" [formControl]="formControl" vjInput aria-label="input field" vjMask [uppercase]="true">
+  </vj-input>
   <vj-input class="text-field" label="Inform the Tax Id" hint="This is a form field">
-    <input [formControl]="formControl" vjInput aria-label="input field" vjMask [uppercase]="true">
+    <input id="input-anchor-2" [formControl]="formControl" vjInput aria-label="input field" vjMask [uppercase]="true">
   </vj-input>
   <vj-input class="text-field" label="Inform the Tax Id" [validator]="customValidator"
     hint="This is a form field with custom validator.">

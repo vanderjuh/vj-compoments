@@ -1,7 +1,8 @@
 import { AfterContentInit, Component, ContentChild, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { AbstractControl, FormControlDirective, ValidationErrors } from '@angular/forms';
+import { Router, Scroll } from '@angular/router';
 
-import { debounceTime, Subscription } from 'rxjs';
+import { debounceTime, filter, Subscription } from 'rxjs';
 
 import { VjInputData } from './classes/vj-input-data.class';
 import { VjInputValidator } from './classes/vj-input-validator.class';
@@ -32,6 +33,10 @@ export class VjInputComponent implements AfterContentInit, OnInit, OnDestroy {
   filteredList!: VjInputData[];
   noResultsFound?: boolean;
 
+  private searchingEvent = new EventEmitter<string>();
+  private searchingSub?: Subscription;
+  private routerSub?: Subscription;
+
   get hasAutocomplete(): boolean {
     return ((!!this.list.length) && !this.waiving);
   }
@@ -57,7 +62,9 @@ export class VjInputComponent implements AfterContentInit, OnInit, OnDestroy {
     return (this._formControl?.control.value ?? this._input?.element.nativeElement.value);
   };
 
-  constructor() {
+  constructor(
+    private router: Router
+  ) {
     this.setValidator();
   }
 
@@ -84,38 +91,43 @@ export class VjInputComponent implements AfterContentInit, OnInit, OnDestroy {
     return ((this._formControl?.dirty) ?? false);
   }
 
-  private searchingEvent = new EventEmitter<string>();
-  private searchingSub!: Subscription;
-
   ngOnDestroy(): void {
     this.searchingSub?.unsubscribe();
+    this.routerSub?.unsubscribe();
   }
 
   ngOnInit(): void {
     this.filteredList = this.list;
-    this.searchingSub = this.searchingEvent
-      .pipe(debounceTime(this.debounceTime))
-      .subscribe((result) => {
-        if (!this.hasAutocomplete)
-          return;
-        var evaluated = this.list?.filter(x => x.label.toLowerCase().trim().includes(result.toLowerCase().trim()));
-        this.filteredList = (evaluated?.length) ? evaluated : this.list;
-        this.noResultsFound = (evaluated?.length ? false : true);
-        if (this.noResultsFound) {
-          this._formControl?.control?.setErrors({ [VjInputErrorKeyEnum.noResultsFound]: true })
-        } else {
-          const errors = (this._formControl?.errors ?? {});
-          delete errors[VjInputErrorKeyEnum.noResultsFound];
-          this._formControl?.control?.setErrors(errors);
-        }
-        this.isLoading = false;
-      })
+    this.setSearchingEvent();
+  }
+
+  private setSearchingEvent() {
+    if (!this.searchingSub) {
+      this.searchingSub = this.searchingEvent
+        .pipe(debounceTime(this.debounceTime))
+        .subscribe((result) => {
+          if (!this.hasAutocomplete)
+            return;
+          var evaluated = this.list?.filter(x => x.label.toLowerCase().trim().includes(result.toLowerCase().trim()));
+          this.filteredList = (evaluated?.length) ? evaluated : this.list;
+          this.noResultsFound = (evaluated?.length ? false : true);
+          if (this.noResultsFound) {
+            this._formControl?.control?.setErrors({ [VjInputErrorKeyEnum.noResultsFound]: true });
+          } else {
+            const errors = (this._formControl?.errors ?? {});
+            delete errors[VjInputErrorKeyEnum.noResultsFound];
+            this._formControl?.control?.setErrors(errors);
+          }
+          this.isLoading = false;
+        });
+    }
   }
 
   ngAfterContentInit(): void {
     this.setValue();
     this.setAutocomplete();
     this.checkDisableState(this.isDisabled);
+    this.setAnchoringEvent()
   }
 
   onClickAutocompleteItem(event: VjInputData): void {
@@ -186,5 +198,18 @@ export class VjInputComponent implements AfterContentInit, OnInit, OnDestroy {
 
   focusCursor() {
     this._input?.element.nativeElement.focus();
+  }
+
+  setAnchoringEvent(): void {
+    if (!this.routerSub) {
+      this.routerSub = this.router.events
+        .pipe(filter(x => x instanceof Scroll))
+        .subscribe((event) => {
+          const anchor = (event as Scroll).anchor;
+          if (this._input?.element.nativeElement.id === anchor) {
+            this._input?.element.nativeElement.focus();
+          }
+        });
+    }
   }
 }
