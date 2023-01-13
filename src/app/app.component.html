@@ -18,8 +18,8 @@
   <vj-input class="text-field" label="Inform the Tax Id" hint="This is a simple text field.">
     <input vjInput aria-label="input field" vjMask [uppercase]="true">
   </vj-input>
-  <vj-input class="text-field" label="Inform the Tax Id" hint="This is a text field with mask.">
-    <input vjInput placeholder="12-AB-3456" aria-label="input field" vjMask mask="##-AA-####" [uppercase]="true">
+  <vj-input class="text-field" label="Inform the Tax Id" hint="This is a text field with uppercase mask.">
+    <input vjInput aria-label="input field" vjMask [uppercase]="true">
   </vj-input>
   <vj-input [list]="list" class="text-field" label="Inform the Tax Id" hint="This is a text field with autocomplete.">
     <input [formControl]="formControlAutocomplete" vjInput aria-label="input field">
@@ -32,6 +32,6 @@
   </vj-input>
   <vj-input [list]="list" class="text-field" label="Inform the Tax Id" [waiving]="true"
     hint="Essa é uma diquinha muito muito boa. não vai perder!">
-    <input vjInput placeholder="12-AB-3456" aria-label="input field" vjMask mask="##-AA-####" [uppercase]="true">
+    <input vjInput aria-label="input field">
   </vj-input>
 </div>
