@@ -146,7 +146,7 @@ $input-autocomplete-height: 2rem;
       height: 50px;
       padding: $padding;
       display: flex;
-      justify-content: start;
+      justify-content: flex-start;
       align-items: center;
     }
     .input-autocomplete-list {
@@ -157,7 +157,7 @@ $input-autocomplete-height: 2rem;
         width: 100%;
         height: 50px;
         display: flex;
-        justify-content: start;
+        justify-content: flex-start;
         align-items: center;
         padding: $padding;
         &:hover {
